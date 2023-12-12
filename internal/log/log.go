@@ -1,0 +1,105 @@
+package log
+
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
+)
+
+var logFolder string
+
+func init() {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Println("[!] Error getting user home directory:", err)
+		os.Exit(1)
+	}
+	logFolder = filepath.Join(homeDir, "operator-logs")
+
+	err = os.MkdirAll(logFolder, os.ModePerm)
+	if err != nil {
+		log.Println("[!] Error creating log folder:", err)
+		os.Exit(1)
+	}
+}
+
+func LogCommand(entry *LogEntry) {
+	// Open the log file or create it if it doesn't exist
+	logFileName := filepath.Join(logFolder, entry.Date[:10]+".json")
+	logFile, err := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		log.Println("Error opening log file:", err)
+		os.Exit(1)
+	}
+	defer logFile.Close()
+
+	// Read existing entries or initialize as empty array
+	var entries []LogEntry
+	stat, err := logFile.Stat()
+	if err != nil {
+		log.Println("Error getting file stat:", err)
+		os.Exit(1)
+	}
+
+	if stat.Size() > 0 {
+		decoder := json.NewDecoder(logFile)
+		if err := decoder.Decode(&entries); err != nil && err != io.EOF {
+			log.Println("Error decoding log file:", err)
+			os.Exit(1)
+		}
+	}
+
+	// Append the new entry
+	entries = append(entries, *entry)
+
+	// Write all entries back to the file
+	logFile.Seek(0, 0)
+	logFile.Truncate(0)
+	encoder := json.NewEncoder(logFile)
+	encoder.SetIndent("", "  ")
+
+	if err := encoder.Encode(entries); err != nil {
+		log.Println("Error encoding log entries:", err)
+		os.Exit(1)
+	}
+}
+
+func PrintLogs(path string) {
+	header := fmt.Sprintf("%-25s %-20s %-20s %-20s\n", "Date", "IPAddr", "Operator", "Command")
+	fmt.Printf("%s%s\n", header, strings.Repeat("-", len(header)))
+
+	filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
+		if err != nil {
+			log.Println("[!] Error accessing path:", err)
+			return nil
+		}
+
+		if info.IsDir() {
+			return nil
+		}
+
+		logFile, err := os.Open(filePath)
+		if err != nil {
+			log.Println("[!] Error opening log file:", err)
+			return nil
+		}
+		defer logFile.Close()
+
+		var entries []LogEntry
+		decoder := json.NewDecoder(logFile)
+		if err := decoder.Decode(&entries); err != nil {
+			log.Println("[!] Error decoding log file:", err)
+			return nil
+		}
+
+		for _, entry := range entries {
+			fmt.Printf("%-25s %-20s %-20s %-20s\n", entry.Date, entry.IPAddr, entry.Operator, entry.Command)
+		}
+		fmt.Println()
+		return nil
+	})
+}
