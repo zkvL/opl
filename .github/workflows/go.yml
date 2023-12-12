@@ -29,4 +29,3 @@ jobs:
         goversion: "https://dl.google.com/go/go1.21.5.linux-amd64.tar.gz"
         project_path: "./cmd/"
         binary_name: "opl"
-        extra_files: LICENSE README.md
