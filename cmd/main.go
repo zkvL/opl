@@ -15,7 +15,7 @@ var wg sync.WaitGroup
 
 func main() {
 	print := flag.String("print", "", "Print log file or folder")
-	runCmd := flag.Bool("runCmd", true, "If false, will log the command and pass the execution to shell environment")
+	runCmd := flag.Bool("runCmd", true, "If false, will only log the command/string that follows.\nYou can use shell env profiles to pass the execution to the shell.")
 	flag.Parse()
 
 	if *print != "" {
