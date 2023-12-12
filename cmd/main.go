@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"sync"
 
-	logger "github.com/zkvl/opl/internal/log"
+	logger "github.com/zkvL/opl/internal/log"
 )
 
 var wg sync.WaitGroup
