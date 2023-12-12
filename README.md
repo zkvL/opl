@@ -42,7 +42,7 @@ function log_cmd --on-event fish_prompt
 ## Install
 
 ```bash
-go install github.com/zkvL/opl@latest
+go install github.com/zkvL/opl/cmd@latest
 ```
 
 ## TODO
