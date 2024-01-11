@@ -8,6 +8,9 @@ You can simply download the binary and place it within your `$PATH`. The followi
 
 ```bash
 opl -enable [fish|zsh]
+source ~/.config/fish/config.fish
+# OR
+source  ~/.zshrc
 ```
 
 Effectively it will change the ~/.zshrc or ~/.config/fish/config.fish configuration to add the following:
@@ -25,7 +28,7 @@ end
 preexec() { opl "${1}" }
 ```
 
-Note that currently, it only changes `zsh` or `fish` shell configuration.
+Note that currently, it only changes `zsh` or `fish` shell configuration. 
 
 ## Use
 When enabled, `opl` will keep a registry of files within the `$HOME/operator-logs` folder. Each log file will be named with the current date in JSON format, as shown below:
@@ -73,8 +76,8 @@ set -g -x OPERATOR zkvL
 ```
 
 ## Disable
-`opl -disable [fish|zsh]` will disable logging every input.
+`opl -disable [fish|zsh]` will disable logging every input. Needs to open a new shell.
 
 ## TODO
 - [x] Use shell env tweaks to capture commands in the background. Idea from [c2biz](https://github.com/c2biz)
-- [ ] Filter out common commands like `ls`, `cd`, `mkdir`, etc.
+- [ ] Filter out common commands like `ls`, `cd`, `mkdir`, `opl`` itself, etc.
