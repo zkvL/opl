@@ -13,7 +13,7 @@ source ~/.config/fish/config.fish
 source  ~/.zshrc
 ```
 
-Effectively it will change the ~/.zshrc or ~/.config/fish/config.fish configuration to add the following:
+Effectively it will change the `~/.zshrc` or `~/.config/fish/config.fish` configuration to add the following:
 
 ```bash
 # Fish sehll
