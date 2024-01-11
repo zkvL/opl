@@ -4,7 +4,6 @@ import (
 	"log"
 	"net"
 	"os"
-	"strings"
 	"time"
 
 	externalip "github.com/glendc/go-external-ip"
@@ -17,13 +16,7 @@ type LogEntry struct {
 	Operator string `json:"operator,omitempty"`
 }
 
-func NewEntry(runCmd bool) *LogEntry {
-	var command []string
-	if runCmd {
-		command = os.Args[1:]
-	} else {
-		command = os.Args[2:]
-	}
+func NewEntry(noip bool) *LogEntry {
 	operator := os.Getenv("OPERATOR")
 	date := time.Now().UTC().Format("2006-01-02 15:04:05 GMT")
 	ip, err := getPublicIP()
@@ -31,7 +24,13 @@ func NewEntry(runCmd bool) *LogEntry {
 		log.Println("[!] Error getting the public IP")
 	}
 
-	return &LogEntry{Date: date, Command: strings.Join(command, " "), IPAddr: ip.String(), Operator: operator}
+	if !noip {
+		command := os.Args[1]
+		return &LogEntry{Date: date, Command: command, IPAddr: ip.String(), Operator: operator}
+	} else {
+		command := os.Args[2]
+		return &LogEntry{Date: date, Command: command, IPAddr: "", Operator: operator}
+	}
 }
 
 func getPublicIP() (net.IP, error) {

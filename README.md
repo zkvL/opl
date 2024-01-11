@@ -1,64 +1,80 @@
 # Operator Log (opl) - Yet another operator logging tool
 
-Simple go tool to log commands issued by red team operators. 
+Simple go tool to log activities issued by red team operators. 
 The idea is to avoid keeping manual track of timestamps when executing commands and instead just focus on executing. 
 
-## Use
-Just precede any command with this tool to get that logged. 
-It will keep a registry of files within `$HOME/operator-logs` folder and each log is named with the current date in JSON format:
+## Install & enable
+You can simply download the binary and place it within your `$PATH`. The following command will enable logging all text input to the terminal:
 
 ```bash
-opl amass enum -d domain.com
+opl -enable [fish|zsh]
 ```
 
-To get a timeline of executed commands just use: 
+Effectively it will change the ~/.zshrc or ~/.config/fish/config.fish configuration to add the following:
+
+```bash
+# Fish sehll
+function logCmd --on-event fish_prompt
+  set cmd $history[1]
+  opl "$cmd"
+end
+```
+
+```bash
+# ZSH shell
+preexec() { opl "${1}" }
+```
+
+Note that currently, it only changes `zsh` or `fish` shell configuration.
+
+## Use
+When enabled, `opl` will keep a registry of files within the `$HOME/operator-logs` folder. Each log file will be named with the current date in JSON format, as shown below:
+```bash
+[
+  {
+    "date": "2023-08-05 17:26:09 GMT",
+    "command": "amass enum -d DOMAIN.TARGET",
+    "ipaddr": "XXX.XXX.XX.XXXX"
+  },
+  {
+    "date": "2023-08-05 17:34:32 GMT",
+    "command": "nmap --top-ports 1000 [...]",
+    "ipaddr": "XXX.XXX.XX.XXXX",
+    "operator": "zkvL"
+  },
+  [...]
+]
+```
+
+If you want to log an activity, instead of a command, you can add it manually:
+```bash
+opl [-noip] 'Login to exposed Jenkins using the JenkinsAdmin account'
+```
+
+The `-noip` flag will prevent the command from adding an IP address to the log (in case you executed such activity from another endpoint than the one registering the activity).
+Finally, you can parse the logs to report activities using the `-print` flag
+
+
 ```bash
 opl -print $HOME/operator-logs
 # OR
 opl -print $HOME/operator-logs/YYYY-MM-DD.json
+
+Date                      IPAddr               Operator             Command             
+-----------------------------------------------------------------------------------------------
+2023-08-05 17:26:09 GMT   XXX.XXX.XX.XXXX                           amass enum -d DOMAIN.TARGET
+2023-08-05 17:34:32 GMT   XXX.XXX.XX.XXXX      zkvL                 nmap --top-ports 1000 [...]
+[...]
 ```
-
-### Use in the background
-
-You can use it with a little tweak to log every command without the need to precede with the opl command.
-
-Idea from [c2biz](https://github.com/c2biz)
-
-**ZSH**
+The operator field will be added whenever the environment variable `OPERATOR` is set:
 ```bash
-# Add this line to your ~/.zshrc profile
-preexec() { opl -runCmd=false "${1}" }
+# Fish shell
+set -g -x OPERATOR zkvL
 ```
 
-**Fish**
-```bash
-# Add this function to your ~/.config/fish/config.fish file
-function log_cmd --on-event fish_prompt
-  set cmd $history[1]
-  opl -runCmd=false "$cmd"
- end
-```
-
-## Install
-
-```bash
-go install github.com/zkvL/opl/cmd@latest
-```
+## Disable
+`opl -disable [fish|zsh]` will disable logging every input.
 
 ## TODO
-- [x] Install it as a service to capture commands in the background - Less complicated using shell env tweaks
-- [ ] Manage complex commands, e.g. when using one command output to pipe into another
-
-```bash
-# Will log only the cat targets fragment
-opl cat targets | httprobe
-
-# Will log both commands as different log entries
-opl cat targets | opl httprobe
-
-# Will log the entire command and pass the execution to the shell environment
-# Needs additional configuration, for instance using preexec() in zsh
-# Otherwise, it will log the command but won't execute
-preexec() { opl -runCmd=false "${1}" }
-```
-- [ ] Filter out common commands when using in `-runCmd=false` mode
+- [x] Use shell env tweaks to capture commands in the background. Idea from [c2biz](https://github.com/c2biz)
+- [ ] Filter out common commands like `ls`, `cd`, `mkdir`, etc.
