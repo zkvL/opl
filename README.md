@@ -80,4 +80,4 @@ set -g -x OPERATOR zkvL
 
 ## TODO
 - [x] Use shell env tweaks to capture commands in the background. Idea from [c2biz](https://github.com/c2biz)
-- [ ] Filter out common commands like `ls`, `cd`, `mkdir`, `opl`` itself, etc.
+- [ ] Filter out common commands like `ls`, `cd`, `mkdir`, `opl` itself, etc.
