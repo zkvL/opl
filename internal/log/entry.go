@@ -16,21 +16,21 @@ type LogEntry struct {
 	Operator string `json:"operator,omitempty"`
 }
 
-func NewEntry(noip bool) *LogEntry {
+func NewEntry(cmd bool) *LogEntry {
 	operator := os.Getenv("OPERATOR")
 	date := time.Now().UTC().Format("2006-01-02 15:04:05 GMT")
-	ip, err := getPublicIP()
-	if err != nil {
-		log.Println("[!] Error getting the public IP")
+
+	if cmd {
+		command := os.Args[2]
+		ip, err := getPublicIP()
+		if err != nil {
+			log.Println("[!] Error getting the public IP")
+		}
+		return &LogEntry{Date: date, Command: command, IPAddr: ip.String(), Operator: operator}
 	}
 
-	if !noip {
-		command := os.Args[1]
-		return &LogEntry{Date: date, Command: command, IPAddr: ip.String(), Operator: operator}
-	} else {
-		command := os.Args[2]
-		return &LogEntry{Date: date, Command: command, IPAddr: "", Operator: operator}
-	}
+	command := os.Args[1]
+	return &LogEntry{Date: date, Command: command, IPAddr: "", Operator: operator}
 }
 
 func getPublicIP() (net.IP, error) {

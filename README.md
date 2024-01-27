@@ -1,38 +1,42 @@
 # Operator Log (opl) - Yet another operator logging tool
 
-Simple go tool to log activities issued by red team operators. 
-The idea is to avoid keeping manual track of timestamps when executing commands and instead just focus on executing. 
+Simple go tool to log red team operations' activities. The idea is to avoid keeping manual track of timestamps when executing commands and instead just focus on executing. 
 
 ## Install & enable
-You can simply download the binary and place it within your `$PATH`. The following command will enable logging all text input to the terminal:
+Once Go is installed and configured, run:
 
 ```bash
-opl -enable [fish|zsh]
-source ~/.config/fish/config.fish
-# OR
-source  ~/.zshrc
+❯❯❯ go install github.com/zkvL/opl/cmd@latest
 ```
+If everything worked correctly, you should be able to run `opl -h` and see the help output.
 
-Effectively it will change the `~/.zshrc` or `~/.config/fish/config.fish` configuration to add the following:
+### Fish 
+You can create a fish shell function to automatically log shell issued commands (`opl -cmd <COMMAND>`):
 
 ```bash
-# Fish sehll
-function logCmd --on-event fish_prompt
-  set cmd $history[1]
-  opl "$cmd"
-end
+# Fish shell
+❯❯❯ function logCmd --on-event fish_prompt; set cmd $history[1]; opl -cmd "$cmd"; end
 ```
+
+When you want to delete the function you can simply issue:
+```bash
+❯❯❯ functions -e logCmd
+```
+
+### zsh
+If using zsh instead, you can add this to the `$HOME/.zshrc` file:
 
 ```bash
-# ZSH shell
-preexec() { opl "${1}" }
+# $HOME/.zshrc
+preexec() { opl -cmd "${1}" }
 ```
 
-Note that currently, it only changes `zsh` or `fish` shell configuration. 
+Then just source the file to start logging. When you are done simply remove the `preexec()` function and source again the configuration file.
+You may need to restart the zsh shell.
 
 ## Use
-When enabled, `opl` will keep a registry of files within the `$HOME/operator-logs` folder. Each log file will be named with the current date in JSON format, as shown below:
-```bash
+`opl` will keep a registry of files within the `$HOME/operator-logs` folder. Each log file will be named with the current date in JSON format, as shown below:
+```json
 [
   {
     "date": "2023-08-05 17:26:09 GMT",
@@ -51,22 +55,33 @@ When enabled, `opl` will keep a registry of files within the `$HOME/operator-log
 
 If you want to log an activity, instead of a command, you can add it manually:
 ```bash
-opl [-noip] 'Login to exposed Jenkins using the JenkinsAdmin account'
+❯❯❯ opl 'Login to exposed Jenkins using the JenkinsAdmin account'
 ```
 
-The `-noip` flag will prevent the command from adding an IP address to the log (in case you executed such activity from another endpoint than the one registering the activity).
+Without the `-cmd` flag, `opl` wont log a source IP address to the log.
+```json
+[...]
+  {
+    "date": "2023-08-05 20:16:05 GMT",
+    "command": "Login to exposed Jenkins using the JenkinsAdmin account",
+    "ipaddr": ""
+  },
+[...]
+```
+
 Finally, you can parse the logs to report activities using the `-print` flag
 
 
 ```bash
-opl -print $HOME/operator-logs
+❯❯❯ opl -print $HOME/operator-logs
 # OR
-opl -print $HOME/operator-logs/YYYY-MM-DD.json
+❯❯❯ opl -print $HOME/operator-logs/YYYY-MM-DD.json
 
-Date                      IPAddr               Operator             Command             
------------------------------------------------------------------------------------------------
+Date                      IPAddr               Operator             Command/Activity             
+---------------------------------------------------------------------------------------------------------------------------
 2023-08-05 17:26:09 GMT   XXX.XXX.XX.XXXX                           amass enum -d DOMAIN.TARGET
 2023-08-05 17:34:32 GMT   XXX.XXX.XX.XXXX      zkvL                 nmap --top-ports 1000 [...]
+2023-08-05 20:16:05 GMT                                             Login to exposed Jenkins using the JenkinsAdmin account
 [...]
 ```
 The operator field will be added whenever the environment variable `OPERATOR` is set:
@@ -75,9 +90,32 @@ The operator field will be added whenever the environment variable `OPERATOR` is
 set -g -x OPERATOR zkvL
 ```
 
-## Disable
-`opl -disable [fish|zsh]` will disable logging every input. Needs to open a new shell.
+## Filtering
 
-## TODO
-- [x] Use shell env tweaks to capture commands in the background. Idea from [c2biz](https://github.com/c2biz)
-- [ ] Filter out common commands like `ls`, `cd`, `mkdir`, `opl` itself, etc.
+`opl` filters out the following common commands from logging:
+- alias
+- cd
+- chmod
+- chown
+- cp
+- exit
+- find
+- id
+- kill
+- ls
+- locate
+- make
+- man
+- mkdir
+- mv
+- nano
+- opl
+- ps
+- pwd
+- uname
+- vim
+- which
+- whoami
+
+## Credits
+Got the idea of shell env functions to automatically log stuff from [c2biz](https://github.com/c2biz)
