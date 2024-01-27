@@ -6,7 +6,7 @@ Simple go tool to log red team operations' activities. The idea is to avoid keep
 Once Go is installed and configured, run:
 
 ```bash
-❯❯❯ go install github.com/zkvL/opl/cmd@latest
+❯❯❯ go install github.com/zkvL/opl/cmd/opl@latest
 ```
 If everything worked correctly, you should be able to run `opl -h` and see the help output.
 
