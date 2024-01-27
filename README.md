@@ -45,11 +45,10 @@ You may need to restart the zsh shell.
   },
   {
     "date": "2023-08-05 17:34:32 GMT",
-    "command": "nmap --top-ports 1000 […]",
+    "command": "nmap --top-ports 1000 [. . .]",
     "ipaddr": "XXX.XXX.XX.XXXX",
     "operator": "zkvL"
   },
-  […]
 ]
 ```
 
@@ -60,13 +59,17 @@ If you want to log an activity, instead of a command, you can add it manually:
 
 Without the `-cmd` flag, `opl` wont log a source IP address to the log.
 ```json
-[…]
+.
+.
+.
   {
     "date": "2023-08-05 20:16:05 GMT",
     "command": "Login to exposed Jenkins using the JenkinsAdmin account",
     "ipaddr": ""
   },
-[…]
+.
+.
+.
 ```
 
 Finally, you can parse the logs to report activities using the `-print` flag
@@ -80,9 +83,9 @@ Finally, you can parse the logs to report activities using the `-print` flag
 Date                      IPAddr               Operator             Command/Activity             
 ---------------------------------------------------------------------------------------------------------------------------
 2023-08-05 17:26:09 GMT   XXX.XXX.XX.XXXX                           amass enum -d DOMAIN.TARGET
-2023-08-05 17:34:32 GMT   XXX.XXX.XX.XXXX      zkvL                 nmap --top-ports 1000 […]
+2023-08-05 17:34:32 GMT   XXX.XXX.XX.XXXX      zkvL                 nmap --top-ports 1000 [. . .]
 2023-08-05 20:16:05 GMT                                             Login to exposed Jenkins using the JenkinsAdmin account
-[…]
+[...]
 ```
 The operator field will be added whenever the environment variable `OPERATOR` is set:
 ```bash
