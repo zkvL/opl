@@ -59,17 +59,13 @@ If you want to log an activity, instead of a command, you can add it manually:
 
 Without the `-cmd` flag, `opl` wont log a source IP address to the log.
 ```json
-.
-.
-.
+
   {
     "date": "2023-08-05 20:16:05 GMT",
     "command": "Login to exposed Jenkins using the JenkinsAdmin account",
     "ipaddr": ""
   },
-.
-.
-.
+
 ```
 
 Finally, you can parse the logs to report activities using the `-print` flag
