@@ -18,7 +18,7 @@ type LogEntry struct {
 
 func NewEntry(cmd bool) *LogEntry {
 	operator := os.Getenv("OPERATOR")
-	date := time.Now().UTC().Format("2006-01-02 15:04:05 GMT")
+	date := time.Now().UTC().Format("2006-01-02 15:04:05 UTC")
 
 	if cmd {
 		command := os.Args[2]
