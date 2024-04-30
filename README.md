@@ -76,11 +76,11 @@ Finally, you can parse the logs to report activities using the `-print` flag
 # OR
 ❯❯❯ opl -print $HOME/operator-logs/YYYY-MM-DD.json
 
-Date                      IPAddr               Operator             Command/Activity             
----------------------------------------------------------------------------------------------------------------------------
-2023-08-05 17:26:09 GMT   XXX.XXX.XX.XXXX                           amass enum -d DOMAIN.TARGET
-2023-08-05 17:34:32 GMT   XXX.XXX.XX.XXXX      zkvL                 nmap --top-ports 1000 [. . .]
-2023-08-05 20:16:05 GMT                                             Login to exposed Jenkins using the JenkinsAdmin account
+Operator             Timestamp (UTC)           Operator IP          Command/Activity    
+-----------------------------------------------------------------------------------------
+                     2023-08-05 17:26:09 UTC   XXX.XXX.XX.XXXX      amass enum -d DOMAIN.TARGET
+zkvL                 2023-08-05 17:34:32 UTC   XXX.XXX.XX.XXXX      nmap --top-ports 1000 [. . .]
+                     2023-08-05 20:16:05 UTC                        Login to exposed Jenkins using the JenkinsAdmin account
 [...]
 ```
 The operator field will be added whenever the environment variable `OPERATOR` is set:
