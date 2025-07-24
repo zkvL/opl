@@ -88,7 +88,7 @@ func LogCmd(entry *LogEntry) {
 }
 
 func PrintLogs(path string) {
-	header := fmt.Sprintf("%-20s %-25s %-20s %-20s\n", "Operator", "Timestamp (UTC)", "Operator IP", "Command/Activity")
+	header := fmt.Sprintf("%-20s %-20s %-25s %-20s\n", "Operator", "Operator IP", "Timestamp (UTC)", "Command/Activity")
 	fmt.Printf("%s%s\n", header, strings.Repeat("-", len(header)))
 
 	filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
@@ -116,7 +116,7 @@ func PrintLogs(path string) {
 		}
 
 		for _, entry := range entries {
-			fmt.Printf("%-20s %-25s %-20s %-20s\n", entry.Operator, entry.Date, entry.IPAddr, entry.Command)
+			fmt.Printf("%-20s %-20s %-25s %-20s\n", entry.Operator, entry.IPAddr, entry.Date, entry.Command)
 		}
 		fmt.Println()
 		return nil
