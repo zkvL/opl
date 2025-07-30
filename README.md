@@ -8,7 +8,7 @@ You can just download the binary from [releases](https://github.com/zkvL/opl/rel
 
 Or, if you're a Go user, use `go install`
 ```shell
-go install github.com/zkvL/opl/cmd/opl@latest
+go install github.com/zkvL/opl@latest
 ```
 
 ## Usage 
