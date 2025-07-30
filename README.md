@@ -76,7 +76,7 @@ To ensure that `opl` solely focused on logging, command execution and logging ca
 
 ```shell
 set -g -x OPERATOR zkvL
-function logCmd --on-event fish_prompt; set cmd $history[1]; opl -act "$cmd"; end
+function logCmd --on-event fish_prompt; set cmd $history[1]; opl --act "$cmd"; end
 ```
 
 - When you want to delete the function you can simply issue:
@@ -89,7 +89,7 @@ functions -e logCmd
 
 ```bash
 # $HOME/.zshrc
-preexec() { opl -act "${1}" }
+preexec() { opl --act "${1}" }
 ```
 
 Then just source the file to start logging. When you are done simply remove the `preexec()` function and source again the configuration file.
