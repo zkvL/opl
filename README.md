@@ -99,11 +99,8 @@ You may need to restart the zsh shell.
 To parse the logs you can use the `-show` flag:
 
 ```shell
-# Parse logs from default location $HOME/.oplogs
-opl -s 
-
-# Parse logs from a given folder or file
-opl -s -l date-project/operator/logs/YYYY-MM-DD.json
+# Parse logs from default location $HOME/.oplogs or from a given folder or file
+opl -s [-l date-project/operator/logs/YYYY-MM-DD.json]
 Operator Operator IP(s)                              Timestamp (UTC)         Command/Activity                                                 
 -------------------------------------------------------------------------------------------------------------------------------------------
          187.130.216.101                             2025-07-30 00:19:41 UTC Sent email phishing campaing                                     
@@ -113,9 +110,9 @@ zkvL     187.130.216.91                              2025-07-30 00:20:21 UTC nma
 [...]
 ```
 
-Currently `opl` also supports fomratting the output to markdown:
+Currently `opl` also supports formatting the output to markdown:
 ```shell
-opl -s -m
+opl -s -f md
 | Operator | Operator IP(s)                              | Timestamp (UTC)         | Command/Activity                                                  |
 |----------|---------------------------------------------|-------------------------|-------------------------------------------------------------------|
 |          | 187.130.216.101                             | 2025-07-30 00:19:41 UTC | Sent email phishing campaing                                      |
@@ -123,6 +120,12 @@ opl -s -m
 |          | 189.100.12.11, 189.100.12.12, 189.100.12.13 | 2025-07-30 00:20:05 UTC | Run distributed amass scan                                        |
 | zkvL     | 187.130.216.91                              | 2025-07-30 00:20:21 UTC | nmap -p- -T4 -sV -sC -oA output -vv -Pn 123.123.123.4,192.168.1.1 |
 [...]
+```
+
+Or XLSX:
+```shell
+opl -s -f xlsx
+[+] Logs written successfully to file: opl-timeline.xlsx
 ```
 
 ## Filtering
