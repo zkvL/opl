@@ -6,7 +6,7 @@ import (
 )
 
 var operator = os.Getenv("OPERATOR")
-var date = time.Now().UTC().Format("2006-01-02 15:04:05 UTC")
+var date = time.Now().UTC().Format("2006-01-02 15:04")
 
 type LogEntry struct {
 	Date     string   `json:"date"`
